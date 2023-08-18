@@ -70,6 +70,7 @@ function removeTask(event){
 function updateTask(event){
     const taskItem = event.target;
     const taskText = taskItem.textContent;
+    const taskId = taskItem.closest('.task-container').dataset.taskId;
 
     const taskUpdateInput = document.createElement('input');
     taskUpdateInput.value = taskText;
@@ -77,9 +78,12 @@ function updateTask(event){
     taskUpdateInput.addEventListener('keydown', (event) => {
         if (event.key == 'Enter' && taskUpdateInput.value.trim !== ''){
             taskItem.textContent = taskUpdateInput.value;
+            taskMap.set(taskId, taskItem.textContent);
+            saveTasksToLocalStorage(taskMap);
             taskUpdateInput.replaceWith(taskItem);
         }
     });
+
 
     taskItem.replaceWith(taskUpdateInput);
     taskUpdateInput.focus();
