@@ -4,18 +4,24 @@ const importTasks = document.getElementById('importTasks');
 const exportTasks = document.getElementById('exportTasks');
 let taskMap = loadTasksFromLocalStorage();
 
-taskMap.forEach((taskText, taskId) => {
-    addTask(taskId, taskText)
+taskMap.forEach((task, taskId) => {
+    addTask(taskId, task);
 });
 
 taskInput.addEventListener('keydown', (event) => {
     if (event.key == 'Enter' && taskInput.value.trim() !== '') {
         const taskId = generateUniqueId();
         const taskText = taskInput.value;
-        addTask(taskId, taskText);
+
+        const task = {
+            text: taskText,
+            completed: false         
+        };
+
+        addTask(taskId, task);
         taskInput.value = '';
 
-        taskMap.set(taskId, taskText);
+        taskMap.set(taskId, task);
         saveTasksToLocalStorage(taskMap);
     }
 });
@@ -29,24 +35,26 @@ function saveTasksToLocalStorage(tasks){
     localStorage.setItem('tasks', JSON.stringify([...tasks]));
 }
 
-function addTask(taskId, taskText){
+function addTask(taskId, task){
     let taskContainer = document.createElement('div');
     taskContainer.classList.add('task-container');
     taskContainer.setAttribute('data-task-id', taskId);
 
     let taskItem = document.createElement('span');
     taskItem.classList.add('task-text');
-    taskItem.textContent = taskText;
+    taskItem.textContent = task.text;
 
-    let taskStatus = document.createElement('input');
-    taskStatus.type = 'checkbox';
+    let taskStatusChecked = document.createElement('input');
+    taskStatusChecked.type = 'checkbox';
+    taskStatusChecked.classList.add('task-status');
+    taskStatusChecked.checked = task.completed;
 
     let taskRemoveButton = document.createElement('button');
     taskRemoveButton.type = 'button';
     taskRemoveButton.id = 'taskRemoveButton';
     taskRemoveButton.textContent = 'X';
 
-    taskContainer.appendChild(taskStatus);
+    taskContainer.appendChild(taskStatusChecked);
     taskContainer.appendChild(taskItem);
     taskContainer.appendChild(taskRemoveButton);
     taskList.appendChild(taskContainer);
@@ -54,7 +62,7 @@ function addTask(taskId, taskText){
 
     taskRemoveButton.addEventListener('click', removeTask);
     taskItem.addEventListener('dblclick', updateTask);
-    taskStatus.addEventListener('change', toggleCompleted);
+    taskStatusChecked.addEventListener('change', toggleCompleted);
 }
 
 function removeTask(event){
@@ -72,13 +80,16 @@ function updateTask(event){
     const taskText = taskItem.textContent;
     const taskId = taskItem.closest('.task-container').dataset.taskId;
 
+    const task = taskMap.get(taskId);
+
     const taskUpdateInput = document.createElement('input');
     taskUpdateInput.value = taskText;
 
     taskUpdateInput.addEventListener('keydown', (event) => {
         if (event.key == 'Enter' && taskUpdateInput.value.trim !== ''){
             taskItem.textContent = taskUpdateInput.value;
-            taskMap.set(taskId, taskItem.textContent);
+            task.text = taskItem.textContent;
+            taskMap.set(taskId, task);
             saveTasksToLocalStorage(taskMap);
             taskUpdateInput.replaceWith(taskItem);
         }
@@ -96,7 +107,15 @@ function generateUniqueId(){
 
 function toggleCompleted(event){
     const taskContainer = event.target.closest('.task-container');
-    taskContainer.classList.toggle('completed', event.target.checked);
+    const taskId = taskContainer.dataset.taskId;
+    const taskStatusCheckbox = taskContainer.querySelector('.task-status');
+    taskContainer.classList.toggle('completed', taskStatusCheckbox.checked);
+
+    const task = taskMap.get(taskId);
+
+    task.completed = !task.completed;
+    taskMap.set(taskId, task);
+    saveTasksToLocalStorage(taskMap);
 }
 
 // TODO - implement import tasks from file functionality
