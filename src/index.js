@@ -48,6 +48,9 @@ function addTask(taskId, task){
     taskStatusChecked.type = 'checkbox';
     taskStatusChecked.classList.add('task-status');
     taskStatusChecked.checked = task.completed;
+    if (task.completed){
+        taskContainer.classList.toggle('completed');
+    }
 
     let taskRemoveButton = document.createElement('button');
     taskRemoveButton.type = 'button';
