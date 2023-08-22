@@ -105,7 +105,7 @@ function updateTask(event){
 
 function generateUniqueId(){
     // https://stackoverflow.com/a/53116778
-    return Date.now().toString(36) + Math.random().toString(36).substring(2, 12).padStart(12, 0)
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 12).padStart(12, 0);
 }
 
 function toggleCompleted(event){
@@ -127,4 +127,26 @@ importTasks.addEventListener('click', (event) => {
 
 // TODO - implement export tasks from file functionality
 exportTasks.addEventListener('click', (event) => {
+    const tasksJSON = localStorage.getItem('tasks');
+    console.log(tasksJSON);
+    if (tasksJSON !== "[]"){
+        console.log('exporting');
+        
+        const a = document.createElement('a');
+        const blob = new Blob([tasksJSON], {type:'text/plain'});
+        const url = URL.createObjectURL(blob);
+
+        a.href = url;
+        a.download = 'tasks.txt';
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+    } else {
+        console.log('empty tasks');
+    }
 });
