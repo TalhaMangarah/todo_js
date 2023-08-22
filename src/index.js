@@ -125,19 +125,21 @@ function toggleCompleted(event){
 importTasks.addEventListener('click', (event) => {
 });
 
-// TODO - implement export tasks from file functionality
 exportTasks.addEventListener('click', (event) => {
     const tasksJSON = localStorage.getItem('tasks');
     console.log(tasksJSON);
     if (tasksJSON !== "[]"){
         console.log('exporting');
+
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '');
+        const fileName = `tasks_${timestamp}.txt`; 
         
         const a = document.createElement('a');
         const blob = new Blob([tasksJSON], {type:'text/plain'});
         const url = URL.createObjectURL(blob);
 
         a.href = url;
-        a.download = 'tasks.txt';
+        a.download = fileName;
 
         document.body.appendChild(a);
 
