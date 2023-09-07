@@ -1,14 +1,328 @@
+:root {
+    --text: #ffffff;
+    --background: #141414;
+    --primary: #3a5b5b;
+    --secondary: #1a2d2d;
+    --accent: #6ba8a7;
+}
+
+@font-face {
+    font-family: "Pattaya-Regular";
+    src: url(/src/fonts/Pattaya-Regular.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: "Sarabun-Regular";
+    src: url(/src/fonts/Sarabun-Regular.ttf) format('truetype');
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
+    min-height: 100vh;
+    margin: 0 15%;
+    width: auto !important;
     align-items: center;
     text-align: center;
+    background: var(--background);
+    scroll-behavior: smooth;
+
+    font-family: 'Sarabun-Regular', sans-serif;
+}
+
+@media screen and (max-width: 1200px) {
+    body {
+      margin: 0 5%;
+      margin-top: 0px;
+      /* --subtitle: 20px;
+      --h1: 32px;
+      --h2: 24px;
+      --p: 16px;
+      --sub: 14px; */
+    }
+}
+
+header {
+}
+
+main {
+
+}
+
+h1 {
+    font-family: 'Pattaya-Regular', sans-serif;
+}
+
+h1, h2, h3, h4, h5 {
+    color: var(--text);
+}
+
+p {
+    color: var(--text);
+}
+
+button {
+    background-color: var(--primary);
+    border: none;
+    padding: 15px 32px;
+    border-radius: 4px;
+    color: #eee;
+    cursor: pointer;
+}
+
+#importTasks:hover {
+    background-color: var(--accent);
+}
+
+#exportTasks:hover {
+    background-color: var(--accent);
+}
+
+input {
+    background-color: var(--secondary);
+    color: var(--text);
+    border-style: solid;
+    border-color: var(--accent);
+    border-radius: 4px;
+}
+
+input:focus {
+    outline: 1px solid;
+    outline-color: var(--accent);
+}
+
+#fileInput {
+    display: none;
+}
+
+#taskInput {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background: var(--secondary);
+    border: none;
+    border-radius: 6px;
+    padding: 1rem;
+    color: var(--text);
+}
+
+.task-list-container {
+    overflow-y: auto;
+    height: calc(100vh - 300px);;
+    padding-top: 1rem;
 }
 
 #taskList {
     list-style-type: none;
+    padding-left: unset;
+    margin-top: unset;
+    max-height: calc(100vh - 100px);
 }
 
-.completed {
+.task-container {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    /* margin-bottom: 1rem; */
+    /* border: blue; */
+    background-color: var(--primary);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: white;
+    border-radius: 10px;
+    border-color: var(--secondary);
+    border-style: solid;
+    border-width: 0.5px;
+    cursor: pointer;
+}
+
+.task-container:hover {
+    background-color: var(--secondary);
+}
+
+.task-status {
+    display: none;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+    /* margin-left: 20px; */
+}
+
+.checkmark {
+    display: flex;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    color: #f199bf;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.checkmark:hover {
+    background-color: var(--accent);
+}
+
+.task-status:checked ~ .checkmark {
+    background-color: var(--accent);
+}
+
+.task-checkmark-icon path {
+    fill: none;
+    stroke: var(--secondary);
+    stroke-width: 1;
+    stroke-dasharray: 31;
+    stroke-dashoffset: 31;
+    animation: draw 0.25s linear forwards;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0
+    }
+}
+
+.checkbox-label {
+    margin-left: 10px;
+}
+
+/* .task-checkmark-icon {
+    display: flex;
+} */
+
+
+/* .checkbox-label:checked {
+    background-color: #2196F3;
+} */
+
+/* .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+} */
+
+
+#taskRemoveButton {
+    color: var(--accent);
+    width: 1rem;
+    padding: 0;
+    margin-right: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#taskRemoveButton svg{
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    transform: scale(1);
+}
+
+#taskRemoveButton svg:hover {
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    transform: scale(1.2);
+}
+
+/* .task-remove-icon {
+    justify-content: center;
+    align-items: center;
+} */
+
+.task-text {
+    color: var(--text);
+    /* margin: auto;
+    overflow-x: scroll; */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis (...) for overflowed text */
+    text-align: left;
+    /* padding-left: 50px; */
+}
+
+.task-text:hover {
+    white-space: initial; /* Allow text to wrap */
+    overflow: auto; /* Enable scrolling for overflowed text */
+    text-overflow: initial; /* Remove ellipsis */
+    /* max-height: 80px; Set a maximum height for the scrollable area */
+    cursor: pointer; /* Show pointer cursor on hover for indication */
+
+    /* Move the scrollbar to the bottom */
+    scrollbar-width: thin; /* Display a thin scrollbar */
+    scrollbar-color: transparent transparent #888;
+}
+
+/* .completed {
+    text-decoration: line-through;
+    color: #999;
+} */
+
+.completed .task-text {
     text-decoration: line-through;
     color: #999;
 }
 
+footer{
+    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 6px;
+    background-color: var(--accent);
+    padding: 2em;
+    color: var(--text);
+}
+
+.footer-cols {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+.footer-col {
+    display: flex;
+}
+
+.footer-col span {
+    display: flex;
+    place-items: center;
+}
+
+.footer-col span svg {
+    display: grid;
+}
+
+.footer-col a {
+    color: var(--secondary);
+}
+
+.footer-col a:visited {
+    color:  var(--primary);
+}
+
+
+@media screen and (max-width: 1100px) {
+    .footer-cols {
+      flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    .footer-col {
+      width: 100%;
+      place-content: center;
+    }
+}
