@@ -8,12 +8,12 @@
 
 @font-face {
     font-family: "Pattaya-Regular";
-    src: url(/src/fonts/Pattaya-Regular.ttf) format('truetype');
+    src:url(/src/fonts/Pattaya-Regular.ttf) format('truetype');
 }
 
 @font-face {
     font-family: "Sarabun-Regular";
-    src: url(/src/fonts/Sarabun-Regular.ttf) format('truetype');
+    src:url(/src/fonts/Sarabun-Regular.ttf) format('truetype');
 }
 
 * {

@@ -153,45 +153,62 @@ importTasks.addEventListener('click', () => {
 
 
 // "Keys" here are due to the arr that will be converted to a Map.
-function areKeysUnique(arr) {
+function areImportObjectsValid(arr) {
     const seenKeys = new Set();
     for (const subArray of arr) {
+        if (subArray.length !== 2) {
+            return false;
+        }
+
         const key = subArray[0];
+        const obj = subArray[1];
+
         if (seenKeys.has(key)) {
             return false; // Duplicate key found
         }
         seenKeys.add(key);
+
+        // Check if the object has "text" and "completed" fields
+        if (!obj || typeof obj !== 'object' || !('text' in obj) || !('completed' in obj)) {
+            return false;
+        }
+
+        if (typeof obj.text !== 'string' || obj.text.trim() === '') {
+            return false;
+        }
+
+        console.log(obj.completed);
+        if (typeof obj.completed !== 'boolean'){
+            return false;
+        }
     }
-    return true; // All keys are unique
+    return true; // All objects are valid
 }
 
 
 fileInput.addEventListener('change', (event) => {
     const selectedFile = event.target.files[0]; // Get the selected file
+    
     if (selectedFile.length == 0) return; 
 
     let reader = new FileReader();
 
     reader.onload = (e) => {
-        const file = JSON.parse(e.target.result);
-
         try{
-            if(!areKeysUnique(file)){
-                throw new Error('Task IDs are not unique');
+            const file = JSON.parse(e.target.result);
+            
+            if(!areImportObjectsValid(file)){
+                throw new Error('Error with Task object.');
             }
-            console.log(file);
+
+            const importedTasks = new Map(file);
+            saveTasksToLocalStorage(importedTasks);
+            location.reload();
         }
         catch(error){
-            console.error(error);
             alert('Error with file that was imported.\nPlease confirm formatting.\nE.g. [["unique task ID string",{"text":"Task text 1","completed":true/false}],["unique task ID string",{"text":"Task text 2","completed":true/false}]]');
             return;
         }
-        // console.log(fileMap);
-        // console.log(JSON.parse(file));
-        // if(file.substr(0,2) != '[[' || file.substr(file.length-2, 2) != ']]'){
-        //     console.log('file not in correct format');
-        //     return;
-        // }
     }
 
     reader.onerror = (e) => alert(e.target.error.name);
